@@ -42,8 +42,8 @@
 			const controls = new OrbitControls( camera, renderer.domElement );
 			controls.autoRotate = true;
 
-			// PlaneBufferGeometry UVs assume flipY=true, which compressed textures don't support.
-			const geometry = flipY( new THREE.PlaneBufferGeometry() );
+			// PlaneGeometry UVs assume flipY=true, which compressed textures don't support.
+			const geometry = flipY( new THREE.PlaneGeometry() );
 			const material = new THREE.MeshBasicMaterial( {
 				color: 0xFFFFFF,
 				side: THREE.DoubleSide
@@ -89,7 +89,9 @@
 
 			}
 
-			window.addEventListener( 'resize', () => {
+			window.addEventListener( 'resize', onWindowResize );
+
+			function onWindowResize() {
 
 				const width = window.innerWidth;
 				const height = window.innerHeight;
@@ -98,7 +100,7 @@
 				camera.updateProjectionMatrix();
 				renderer.setSize( width, height );
 
-			}, false );
+			}
 
 			/** Correct UVs to be compatible with `flipY=false` textures. */
 			function flipY( geometry ) {

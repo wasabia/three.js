@@ -110,7 +110,7 @@
 							glslVersion: THREE.GLSL3
 						} );
 
-						const geometry = new THREE.PlaneBufferGeometry( planeWidth, planeHeight );
+						const geometry = new THREE.PlaneGeometry( planeWidth, planeHeight );
 
 						mesh = new THREE.Mesh( geometry, material );
 
@@ -128,7 +128,7 @@
 				stats = new Stats();
 				container.appendChild( stats.dom );
 
-				window.addEventListener( 'resize', onWindowResize, false );
+				window.addEventListener( 'resize', onWindowResize );
 
 			}
 
