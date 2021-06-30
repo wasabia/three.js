@@ -22,8 +22,6 @@ class WebGPUUniformsGroup extends WebGPUBinding {
 		this.array = null; // set by the renderer
 		this.bufferGPU = null; // set by the renderer
 
-		Object.defineProperty( this, 'isUniformsGroup', { value: true } );
-
 	}
 
 	addUniform( uniform ) {
@@ -70,13 +68,19 @@ class WebGPUUniformsGroup extends WebGPUBinding {
 			const chunkOffset = offset % chunkSize;
 			const remainingSizeInChunk = chunkSize - chunkOffset;
 
-			// check for chunk overflow
+			// conformance tests
 
 			if ( chunkOffset !== 0 && ( remainingSizeInChunk - uniform.boundary ) < 0 ) {
 
-				// add padding and adjust offset
+				// check for chunk overflow
 
 				offset += ( chunkSize - chunkOffset );
+
+			} else if ( chunkOffset % uniform.boundary !== 0 ) {
+
+				// check for correct alignment
+
+				offset += ( chunkOffset % uniform.boundary );
 
 			}
 
@@ -197,7 +201,7 @@ class WebGPUUniformsGroup extends WebGPUBinding {
 			a[ offset + 0 ] = v.x;
 			a[ offset + 1 ] = v.y;
 			a[ offset + 2 ] = v.z;
-			a[ offset + 3 ] = v.z;
+			a[ offset + 3 ] = v.w;
 
 			updated = true;
 
@@ -291,5 +295,7 @@ function arraysEqual( a, b, offset ) {
 	return true;
 
 }
+
+WebGPUUniformsGroup.prototype.isUniformsGroup = true;
 
 export default WebGPUUniformsGroup;
