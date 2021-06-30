@@ -4,7 +4,6 @@ import { UIPanel, UIRow, UIText, UIInput, UIButton, UISpan } from './libs/ui.js'
 
 import { SetGeometryValueCommand } from './commands/SetGeometryValueCommand.js';
 
-import { SidebarGeometryGeometry } from './Sidebar.Geometry.Geometry.js';
 import { SidebarGeometryBufferGeometry } from './Sidebar.Geometry.BufferGeometry.js';
 import { SidebarGeometryModifiers } from './Sidebar.Geometry.Modifiers.js';
 
@@ -143,20 +142,16 @@ function SidebarGeometry( editor ) {
 	var parameters = new UISpan();
 	container.add( parameters );
 
-	// geometry
-
-	container.add( new SidebarGeometryGeometry( editor ) );
-
 	// buffergeometry
 
 	container.add( new SidebarGeometryBufferGeometry( editor ) );
 
-	// size
+	// Size
 
-	var geometryBoundingSphere = new UIText();
+	var geometryBoundingBox = new UIText().setFontSize( '12px' ).setVerticalAlign( 'middle' );
 
 	container.add( new UIText( strings.getKey( 'sidebar/geometry/bounds' ) ).setWidth( '90px' ) );
-	container.add( geometryBoundingSphere );
+	container.add( geometryBoundingBox );
 
 	// Helpers
 
@@ -205,7 +200,7 @@ function SidebarGeometry( editor ) {
 
 				parameters.clear();
 
-				if ( geometry.type === 'BufferGeometry' || geometry.type === 'Geometry' ) {
+				if ( geometry.type === 'BufferGeometry' ) {
 
 					parameters.add( new SidebarGeometryModifiers( editor, object ) );
 
@@ -221,9 +216,14 @@ function SidebarGeometry( editor ) {
 
 			}
 
-			if ( geometry.boundingSphere === null ) geometry.computeBoundingSphere();
+			if ( geometry.boundingBox === null ) geometry.computeBoundingBox();
 
-			geometryBoundingSphere.setValue( Math.floor( geometry.boundingSphere.radius * 1000 ) / 1000 );
+			const boundingBox = geometry.boundingBox;
+			const x = Math.floor( ( boundingBox.max.x - boundingBox.min.x ) * 1000 ) / 1000;
+			const y = Math.floor( ( boundingBox.max.y - boundingBox.min.y ) * 1000 ) / 1000;
+			const z = Math.floor( ( boundingBox.max.z - boundingBox.min.z ) * 1000 ) / 1000;
+
+			geometryBoundingBox.setInnerHTML( `${x}<br/>${y}<br/>${z}` );
 
 		} else {
 
